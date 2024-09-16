@@ -1,0 +1,30 @@
+drop table if exists users;
+
+create table if not exists users(
+id integer NOT NULL GENERATED ALWAYS AS IDENTITY,
+firstname varchar(50),
+lastname varchar(50),
+isadmin int default 0
+);
+
+alter table users alter column isadmin drop default;
+alter table users alter column isadmin type bool using isadmin::boolean;
+alter table users alter column isadmin set default false;
+
+alter table users add primary key (id);
+
+create table if not exists tasks(
+id int not null generated always as identity,
+name varchar(50),
+userid int
+);
+
+select * from tasks;
+
+
+insert into users (firstname, lastname) values ('sda', 'pas');
+insert into users (firstname, lastname) values ('sd', 'pas');
+select * from users;
+
+drop table tasks;
+drop database lab1 with (force);
