@@ -1,0 +1,21 @@
+drop table if exists countries;
+
+create table if not exists countries(
+	 country_id serial primary key,
+	 country_name text ,
+	 region_id smallint ,
+	 population int 
+);
+
+insert into countries (country_name, region_id, population) values ('Kazakhstan', 24, 18687009);
+insert into countries (country_id, country_name) values (46, 'USA');
+insert into countries (region_id) values (null);
+insert into countries (country_name, region_id, population) 
+values ('Uzbekistan', 35, 37139008), ('Russia', 18, 146150789), ('Mongolia', 54,  3504741);
+alter table countries alter column country_name set default 'Kazakhstan';
+insert into countries (country_name, region_id, population) values (default, 23, 86814841);
+insert into countries values (default);
+
+create table countries_new like countries ;
+
+select * from countries_new;
