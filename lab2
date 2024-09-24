@@ -8,14 +8,32 @@ create table if not exists countries(
 );
 
 insert into countries (country_name, region_id, population) values ('Kazakhstan', 24, 18687009);
+
 insert into countries (country_id, country_name) values (46, 'USA');
+
 insert into countries (region_id) values (null);
+
 insert into countries (country_name, region_id, population) 
+
 values ('Uzbekistan', 35, 37139008), ('Russia', 18, 146150789), ('Mongolia', 54,  3504741);
+
 alter table countries alter column country_name set default 'Kazakhstan';
+
 insert into countries (country_name, region_id, population) values (default, 23, 86814841);
+
 insert into countries values (default);
 
-create table countries_new like countries ;
+CREATE TABLE countries_new (LIKE countries INCLUDING ALL);
 
-select * from countries_new;
+insert into countries_new select * from countries;
+
+update countries set region_id=1 where region_id is null;
+
+select country_name, population*1.10 as "New Population" from countries;
+
+delete from countries where population<100000;
+
+delete from countries_new where country_id in (select country_id from countries) RETURNING *;
+
+delete from countries RETURNING *;
+
