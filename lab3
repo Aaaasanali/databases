@@ -1,0 +1,38 @@
+select lastname from employees;
+
+select distinct lastname from employees;
+
+select * from employees where lastname = 'Smith';	
+
+select * from employees where lastname in ('Smith', 'Doe');	
+
+select * from employees where department=14;
+
+select * from employees where department in (37, 77);
+
+select sum(budget) from departments;
+
+select department, count(*) as num_employees from employees group by department;
+
+select department from (select department, count(*) from employees group by department) where count>2;
+ 
+select name, budget from departments order by budget desc limit 1 offset 1;
+
+select name, lastname 
+from employees 
+where department=(select code from departments order by budget asc limit 1);
+
+select name from employees where city = 'Almaty' 
+union all 
+select name from customers where city = 'Almaty';
+
+select * from departments where budget>60000 order by budget asc, code desc;
+
+update departments set budget = budget*0.9 where budget = (select min(budget) from departments);
+
+update employees set department = (select code from departments where name = 'IT') where
+department = (select code from departments where name = 'Research') ;
+
+delete from employees where department = (select code from departments where name = 'IT');
+
+delete from employees *;
