@@ -1,0 +1,108 @@
+create or replace function increase_value(num integer)
+returns integer 
+as 
+$$
+begin
+    return num + 10;
+end;
+$$ 
+language plpgsql;
+
+select * from increase_value(12);
+
+create or replace function compare(a integer, b integer)
+returns varchar(10)
+as
+$$
+begin
+	if a > b then
+		return 'Greater';
+	elsif a < b then
+		return 'Lesser';
+	else
+		return 'Equal';
+	end if;
+end;
+$$
+language plpgsql;
+
+
+select * from compare(2, 2)
+
+create or replace function number_series(n integer)
+returns table(series integer)
+as
+$$
+declare p integer := 0;
+begin
+	drop table if exists t;
+	create table t(series int);
+	loop
+		insert into t values (p);
+		p = p+1;
+		exit when p = n+1;
+	end loop;
+    return query select * from t;
+end;
+$$ 
+language plpgsql;
+
+select * from number_series(5);
+
+create or replace function find_employee(employee_name text)
+returns table(employee_id integer, name text, department text, salary numeric) as $$
+begin
+    return query select employee_id, name, department, salary
+    from employees
+    where name = employee_name;
+end;
+$$ language plpgsql;
+
+create or replace function list_products(category_name text)
+returns table(product_id integer, product_name text, price numeric, category text) as $$
+begin
+    return query select product_id, product_name, price, category
+    from products
+    where category = category_name;
+end;
+$$ language plpgsql;
+
+create or replace function calculate_bonus(employee_id integer)
+returns numeric as $$
+declare
+    bonus numeric;
+begin
+    select salary * 0.1 into bonus
+    from employees
+    where employee_id = employee_id;
+    return bonus;
+end;
+$$ language plpgsql;
+
+create or replace function update_salary(employee_id integer)
+returns void as $$
+declare
+    bonus numeric;
+begin
+    bonus := calculate_bonus(employee_id);
+    update employees
+    set salary = salary + bonus
+    where employee_id = employee_id;
+end;
+$$ language plpgsql;
+
+create or replace function complex_calculation(input_number integer, input_string varchar)
+returns text as $$
+declare
+    numeric_result integer;
+    string_result varchar;
+begin
+    begin
+        numeric_result := input_number * 2;
+    end;
+    begin
+        string_result := concat(input_string, '_processed');
+    end;
+    return concat('number: ', numeric_result, ', string: ', string_result);
+end;
+$$ language plpgsql;
