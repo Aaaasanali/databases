@@ -1,0 +1,59 @@
+begin;
+
+insert into orders (order_id, book_id, customer_id, order_date, quantity)
+values (1, 1, 101, current_date, 2);
+
+update books
+set quantity = quantity - 2
+where book_id = 1;
+
+commit;
+
+do $$
+begin
+    begin;
+
+    if (select quantity from books where book_id = 3) >= 10 then
+        insert into orders (order_id, book_id, customer_id, order_date, quantity)
+        values (2, 3, 102, current_date, 10);
+
+        update books
+        set quantity = quantity - 10
+        where book_id = 3;
+
+        commit;
+    else
+        rollback;
+    end if;
+end;
+$$;
+
+set transaction isolation level read committed;
+
+begin;
+
+update books
+set price = 37.50
+where book_id = 2;
+
+commit;
+
+set transaction isolation level read committed;
+
+begin;
+
+select price from books where book_id = 2;
+
+select price from books where book_id = 2;
+
+commit;
+
+begin;
+
+update customers
+set email = 'newemail@example.com'
+where customer_id = 101;
+
+commit;
+
+select * from customers where customer_id = 101;
